@@ -1,0 +1,73 @@
+type Utilisateurs {
+  id_utilisateur: String!
+  nom: String
+  prenom: String
+  email: String
+  motDePasse: String!
+}
+
+type EmailExistsResult {
+  utilisateurExists: Boolean!
+}
+
+type Query {
+  utilisateursAll: [Utilisateurs!]!
+  utilisateurExists(email: String!): EmailExistsResult!
+  utilisateurOne(id: String!): Utilisateurs
+}
+
+type AuthJWT {
+  utilisateur: Utilisateurs
+  token: String
+}
+
+type EnvoyerCodeVerification {
+  utilisateur: Utilisateurs
+  codeVerification: String
+}
+
+
+type ReinitialisationMotDePasseResultat {
+  message: String
+}
+
+type DeconnexionResponse {
+  success: Boolean!
+  message: String
+}
+
+type UtilisateurResponse {
+  utilisateur: Utilisateurs
+  pubnubUUID: String
+}
+
+type Mutation {
+  addUtilisateur(
+    nom: String!
+    prenom: String!
+    email: String!
+    motDePasse: String!
+  ): Utilisateurs
+
+  updateUtilisateur(
+    id: String!
+    nom: String
+    prenom: String
+    email: String
+    motDePasse: String
+  ): Utilisateurs
+  
+
+  authentification(email: String!, motDePasse: String!): AuthJWT
+
+  envoyerCodeVerification(email: String!): EnvoyerCodeVerification
+
+  forgetpass(
+    email: String!
+    codeVerification: String!
+    nouveauMotDePasse: String!
+  ): ReinitialisationMotDePasseResultat
+
+  deconnexion: DeconnexionResponse
+
+}

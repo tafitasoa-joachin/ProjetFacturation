@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Utilisateurs {
+  id_utilisateur String         @id 
+  nom            String
+  prenom         String
+  email          String         @unique
+  motDePasse     String
+  projets        Projets[]
+}
+
+model Clients {
+  id_client     Int           @id @default(autoincrement())
+  nom           String?       
+  adresse       String?
+  email         String?
+  telephone     String?
+  autres        String?
+  dateAjout     DateTime?
+  projets       Projets[]
+}
+
+model Projets {
+  id_projet     Int        @id @default(autoincrement())
+  nom           String?
+  description   String?
+  dateDebut     String?
+  dateEcheance  String?
+  dateAjout     DateTime?
+  statut        String?
+  createur      Utilisateurs @relation(fields: [id_createur], references: [id_utilisateur])
+  id_createur   String
+  client        Clients?    @relation(fields: [id_client], references: [id_client])
+  id_client     Int
+  autres        String?
+  taches        Taches[]
+  devis         Devis[]
+  factures      Factures[]
+  assignations  Assignations[] // Relation ajoutée
+}
+
+model Taches {
+  id_tache      Int         @id @default(autoincrement())
+  projet        Projets     @relation(fields: [id_projet], references: [id_projet])
+  id_projet     Int
+  nom           String?
+  description   String?
+  dateDebut     String?
+  dateEcheance  String?
+  priorite      String?
+  statut        String?
+  autres        String?    
+}
+
+model Membres {
+  id_membre    Int        @id   @default(autoincrement())
+  nom          String?
+  email        String?
+  autres       String?
+  assignations Assignations[]
+}
+
+model Assignations {
+  id_assignation Int      @id   @default(autoincrement())
+  projet         Projets  @relation(fields: [id_projet], references: [id_projet])
+  id_projet      Int
+  membre         Membres  @relation(fields: [id_membre], references: [id_membre])
+  id_membre      Int
+  role           String?
+  autres         String?
+}
+
+model Devis {
+  id_devis       Int      @id  @default(autoincrement())
+  projet         Projets  @relation(fields: [id_projet], references: [id_projet])
+  id_projet      Int
+  montantTotal   Float?
+  statut         String?
+  elementsDevis  ElementDevis[]
+  factures       Factures[]
+}
+
+model ElementDevis {
+  id_elementDevis Int    @id  @default(autoincrement())
+  devis           Devis  @relation(fields: [id_devis], references: [id_devis])
+  id_devis        Int
+  description     String?
+  prixUnitaire    Float?
+  quantite        Int
+}
+
+model Factures {
+  id_facture      Int       @id @default(autoincrement())
+  projet          Projets   @relation(fields: [id_projet], references: [id_projet])
+  id_projet       Int
+  devis           Devis?    @relation(fields: [id_devis], references: [id_devis])
+  id_devis        Int
+  dateCreation    String?
+  montantTotal    Float?
+  statut          String?
+  autres          String?
+  paiements       Paiements[]
+}
+
+model Paiements {
+  id_paiement     Int       @id @default(autoincrement())
+  facture         Factures  @relation(fields: [id_facture], references: [id_facture])
+  id_facture      Int
+  montant         Float?
+  datePaiement    String?
+  conditionPaiement String?
+  autres          String?
+}

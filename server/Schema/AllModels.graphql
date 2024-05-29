@@ -1,0 +1,362 @@
+scalar Datetime
+
+type Query {
+    utilisateurs: [Utilisateurs]
+    utilisateur(id_utilisateur: String!): Utilisateurs
+
+    clientsAll(page: Int!, pageSize: Int!): ClientsList!
+    clientOne(id_utilisateur: Int!): Clients
+
+    projetAll(page: Int!, pageSize: Int!): ProjetsList!
+    projetOne(id_projet: Int!): Projets
+    projetFilter(dateDebut:  String!, dateEcheance: String!, statut: String!, page: Int!, pageSize: Int!): ProjetsListFilter!
+
+    tachesAll(page: Int!, pageSize: Int!): TachesList!
+    tacheOne(id_tache: Int!): Taches
+
+    membreOne(id_membre: Int!): Membres
+    membresAll(page: Int!, pageSize: Int!): MembresList!
+
+    assignationsAll(page: Int!, pageSize: Int!): AssignationList!
+    assignationOne(id_assignation: Int!): Assignations
+
+    devisAll(page: Int!, pageSize: Int!): DevisList!
+    devisOne(id_devis: Int!): Devis
+
+    elementDevisAll(page: Int!, pageSize: Int!): ElementDevisList!
+    elementDevisOne(id_elementDevis: Int!): ElementDevis
+
+    facturesAll(page: Int!, pageSize: Int!): FacturesList!
+    factureOne(id_facture: Int!): Factures
+
+    paiementsAll(page: Int!, pageSize: Int!): PaiementsList!
+    paiementOne(id_paiement: Int!): Paiements
+
+    dashboard(year: Int!): DashboardStatistic
+    clientsAndProjectsCount(year: Int!): ClientProjectCounts!
+}
+
+type Mutation {
+    addClient( nom: String, adresse: String, email: String, telephone: String, autres: String): Clients
+    updateClient(id_client: Int!, nom: String , adresse: String, email: String, telephone: String, autres: String): Clients
+    deleteClient(id_client: Int!): Boolean
+
+    addProjet( 
+        nom: String,
+        description: String,
+        dateDebut:  String,
+        dateEcheance: String,
+        statut: String,
+        id_createur: String,
+        id_client: Int!
+    ): Projets
+    
+    updateProjet(
+        id_projet: Int!,     
+        nom: String,
+        description: String,
+        dateDebut:  String,
+        dateEcheance: String,
+        statut: String
+        id_client: Int!
+    ): Projets
+    deleteProjet(id_projet: Int!): Boolean
+
+    addTache(
+        id_projet: Int,
+        nom: String,
+        description: String,
+        dateDebut: String,
+        dateEcheance: String,
+        priorite: String,
+        statut: String,
+        autres: String
+    ): Taches
+
+    updateTache(
+        id_tache: Int!,
+        id_projet: Int,
+        nom: String,
+        description: String,
+        dateDebut: String,
+        dateEcheance: String,
+        priorite: String,
+        statut: String,
+        autres: String
+    ): Taches
+    deleteTache(id_tache: Int!): Boolean
+
+    addMembre(
+        nom: String,
+        email: String,
+        autres: String,
+    ): Membres
+
+    updateMembre(
+        id_membre: Int!, 
+        nom: String,
+        email: String,
+        autres: String,
+    ): Membres
+    deleteMembre(id_membre: Int!): Boolean
+
+    addAssignation(
+        id_projet: Int,
+        id_membre: Int,
+        role: String,
+        autres: String,
+    ): Assignations
+
+    updateAssignation(
+        id_assignation: Int!,
+        id_projet: Int,
+        id_membre: Int,
+        role: String,
+        autres: String,
+    ): Assignations
+
+    deleteAssignation(id_assignation: Int!): Boolean
+
+    addDevis(
+        id_projet: Int,
+        montantTotal: Float,
+        statut: String,
+    ): Devis
+    updateDevis(
+        id_devis: Int!, 
+        montantTotal: Float,
+        statut: String
+    ): Devis
+    deleteDevis(id_devis: Int!): Boolean
+
+    addElementDevis(
+        id_devis: Int,
+        description: String,
+        prixUnitaire: Float,
+        quantite: Int,
+    ): ElementDevis
+    updateElementDevis(
+        id_elementDevis: Int!,
+        id_devis: Int,
+        description: String,
+        prixUnitaire: Float,
+        quantite: Int,
+    ): ElementDevis
+    deleteElementDevis(id_elementDevis: Int!): Boolean
+
+    addFacture(
+        id_projet: Int,
+        id_devis: Int,
+        dateCreation: String,
+        montantTotal: Float,
+        statut: String,
+        autres: String,
+    ): Factures
+    updateFacture(
+        id_facture: Int!,
+        id_projet: Int,
+        id_devis: Int,
+        dateCreation: String,
+        montantTotal: Float,
+        statut: String,
+        autres: String,
+    ): Factures
+    deleteFacture(id_facture: Int!): Boolean
+
+    addPaiement(
+        id_facture: Int,
+        montant: Float,
+        datePaiement: String,
+        autres: String,
+    ): Paiements
+    updatePaiement(
+        id_paiement: Int!, 
+        id_facture: Int,
+        montant: Float,
+        datePaiement: String,
+        autres: String,
+    ): Paiements
+    deletePaiement(id_paiement: Int!): Boolean
+}
+
+type DashboardStatistic {
+  projects: [MonthlyStatistic]
+  clients: [MonthlyStatistic]
+}
+
+type MonthlyStatistic {
+  month: String
+  count: Int
+}
+
+type ClientProjectCounts {
+  clientCount: Int!
+  projectCount: Int!
+}
+
+type Utilisateurs {
+    id_utilisateur: String
+    nom: String
+    prenom: String
+    email: String
+    motDePasse: String
+    projets: [Projets!]!
+}
+
+type UtilisateurList {
+    utilisateurs: [Utilisateurs]
+    pageInfos: PageInfos!
+}
+
+type Clients {
+    id_client: Int!
+    nom: String
+    adresse: String
+    email: String
+    telephone: String
+    autres: String
+    dateAjout: Datetime
+    projets: [Projets!]
+}
+
+type ClientsList {
+    clientsAll: [Clients]
+    pageInfos: PageInfos!
+}
+
+type Projets {
+    id_client: Int
+    id_projet: Int
+    nom: String
+    description: String
+    dateDebut:  String
+    dateEcheance: String
+    dateAjout: Datetime
+    statut: String
+    createur: Utilisateurs
+    autres: String
+    taches: [Taches!]!
+    devis: [Devis!]!
+    factures: [Factures!]!
+    assignations: [Assignations!]!
+    
+}
+
+type ProjetsList {
+    projetAll: [Projets]
+    pageInfos: PageInfos!
+}
+
+type ProjetsListFilter {
+    projetAll: [Projets]
+    messages: String!
+    pageInfos: PageInfos!
+}
+
+type Taches {
+    id_tache: Int
+    id_projet: Int
+    nom: String
+    description: String
+    dateDebut: String
+    dateEcheance: String
+    priorite: String
+    statut: String
+    autres: String 
+}
+
+type TachesList {
+    tachesAll: [Taches]
+    pageInfos: PageInfos!
+}
+
+type Membres {
+    id_membre: Int
+    nom: String
+    email: String
+    autres: String
+    assignations: [Assignations!]!
+}
+
+type MembresList {
+    membresAll: [Membres]
+    pageInfos: PageInfos!
+}
+
+type Assignations {
+    id_assignation: Int
+    projet: Projets
+    membre: Membres
+    role: String
+    autres: String
+}
+
+type AssignationList {
+    assignationsAll: [Assignations]
+    pageInfos: PageInfos!
+}
+
+type Devis {
+    id_devis: Int
+    id_projet: Int
+    projet: Projets
+    montantTotal: Float
+    statut: String
+    elementsDevis: [ElementDevis]
+    factures: [Factures]
+}
+
+type DevisList {
+    devisAll: [Devis]
+    pageInfos: PageInfos!
+}
+
+type ElementDevis {
+    id_elementDevis: Int
+    devis: Devis
+    description: String
+    prixUnitaire: Float
+    quantite: Int
+}
+
+type ElementDevisList {
+    elementDevisAll: [ElementDevis]
+    pageInfos: PageInfos!
+}
+
+type Factures {
+    id_facture: Int
+    projet: Projets
+    devis: Devis
+    dateCreation: String
+    montantTotal: Float
+    statut: String
+    autres: String
+    paiements: [Paiements]  
+}
+
+type FacturesList {
+    facturesAll: [Factures]
+    pageInfos: PageInfos!
+}
+
+type Paiements {
+    id_paiement: Int
+    facture: Factures
+    montant: Float
+    datePaiement: String
+    autres: String 
+}
+
+type PaiementsList {
+    paiementsAll: [Paiements]
+    pageInfos: PageInfos!
+}
+
+
+type PageInfos {
+  pageActuelle: Int!
+  totalPages: Int!
+  nombreCountTotal: Int!
+  tailleDePage: Int!
+}
