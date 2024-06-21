@@ -11,7 +11,8 @@ const addProjet = async (parent, args) => {
       dateEcheance,
       statut,
       id_createur,
-      id_client
+      id_client,
+      nom_client,
     } = args;
 
     // Récupérer le dernier client ajouté
@@ -34,6 +35,7 @@ const addProjet = async (parent, args) => {
         dateAjout: new Date(),
         statut,
         id_createur,
+        nom_client,
         id_client: id_client,
       },
     });

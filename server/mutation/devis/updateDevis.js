@@ -9,17 +9,17 @@ const updateDevis = async (parent, args, context) => {
   try {
     const {
       id_devis,
-      id_projet, montantTotal, statut
+      id_projet, montantTotal, statut, nom_projet
     } = args;
 
     // Vérifier si l'utilisateur est authentifié
-    const utilisateurId = await autorisation(context.token);
-    if (utilisateurId === 0) {
-      return new GraphQLError(constantes.CONNECTION_REFUSE);
-    }
+    // const utilisateurId = await autorisation(context.token);
+    // if (utilisateurId === 0) {
+    //   return new GraphQLError(constantes.CONNECTION_REFUSE);
+    // }
 
     let dataToUpdate = {
-      id_projet, montantTotal, statut
+      id_projet, montantTotal, statut, nom_projet
     };
 
     let updateDevis;

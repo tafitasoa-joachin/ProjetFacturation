@@ -9,7 +9,7 @@ const updateProjet = async (parent, args, context) => {
   try {
     const {
       id_projet,
-      nom, description, dateDebut, dateEcheance, statut, id_createur, id_client, autres
+      nom, description, dateDebut, dateEcheance, statut, id_createur, id_client, nom_client, autres
     } = args;
 
     // Vérifier si l'utilisateur est authentifié
@@ -19,7 +19,7 @@ const updateProjet = async (parent, args, context) => {
     // }
 
     let dataToUpdate = {
-        nom, description, dateDebut, dateEcheance, statut, id_createur, id_client, autres
+        nom, description, dateDebut, dateEcheance, statut, id_createur, id_client, autres, nom_client
     };
 
     let updateProjet;

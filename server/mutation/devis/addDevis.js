@@ -6,11 +6,11 @@ const prisma = new PrismaClient();
 const addDevis = async (parent, args) => {
   try {
     
-    const {  id_projet, montantTotal, statut } = args;
+    const {  id_projet, montantTotal, statut, nom_projet } = args;
 
     const nouvelDevis = await prisma.devis.create({
       data: {
-        id_projet, montantTotal, statut
+        id_projet, montantTotal, statut, nom_projet
       },
     });
 

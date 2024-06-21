@@ -43,6 +43,7 @@ type Mutation {
 
     addProjet( 
         nom: String,
+        nom_client:  String,
         description: String,
         dateDebut:  String,
         dateEcheance: String,
@@ -54,6 +55,7 @@ type Mutation {
     updateProjet(
         id_projet: Int!,     
         nom: String,
+        nom_client:  String
         description: String,
         dateDebut:  String,
         dateEcheance: String,
@@ -65,6 +67,7 @@ type Mutation {
     addTache(
         id_projet: Int,
         nom: String,
+        nom_projet: String,
         description: String,
         dateDebut: String,
         dateEcheance: String,
@@ -77,6 +80,7 @@ type Mutation {
         id_tache: Int!,
         id_projet: Int,
         nom: String,
+        nom_projet: String,
         description: String,
         dateDebut: String,
         dateEcheance: String,
@@ -119,12 +123,14 @@ type Mutation {
 
     addDevis(
         id_projet: Int,
-        montantTotal: Float,
+        nom_projet: String,
+        montantTotal: Int,
         statut: String,
     ): Devis
     updateDevis(
         id_devis: Int!, 
-        montantTotal: Float,
+        nom_projet: String,
+        montantTotal: Int,
         statut: String
     ): Devis
     deleteDevis(id_devis: Int!): Boolean
@@ -132,14 +138,14 @@ type Mutation {
     addElementDevis(
         id_devis: Int,
         description: String,
-        prixUnitaire: Float,
+        prixUnitaire: Int,
         quantite: Int,
     ): ElementDevis
     updateElementDevis(
         id_elementDevis: Int!,
         id_devis: Int,
         description: String,
-        prixUnitaire: Float,
+        prixUnitaire: Int,
         quantite: Int,
     ): ElementDevis
     deleteElementDevis(id_elementDevis: Int!): Boolean
@@ -148,7 +154,7 @@ type Mutation {
         id_projet: Int,
         id_devis: Int,
         dateCreation: String,
-        montantTotal: Float,
+        montantTotal: Int,
         statut: String,
         autres: String,
     ): Factures
@@ -157,7 +163,7 @@ type Mutation {
         id_projet: Int,
         id_devis: Int,
         dateCreation: String,
-        montantTotal: Float,
+        montantTotal: Int,
         statut: String,
         autres: String,
     ): Factures
@@ -165,14 +171,14 @@ type Mutation {
 
     addPaiement(
         id_facture: Int,
-        montant: Float,
+        montant: Int,
         datePaiement: String,
         autres: String,
     ): Paiements
     updatePaiement(
         id_paiement: Int!, 
         id_facture: Int,
-        montant: Float,
+        montant: Int,
         datePaiement: String,
         autres: String,
     ): Paiements
@@ -227,6 +233,7 @@ type ClientsList {
 type Projets {
     id_client: Int
     id_projet: Int
+    nom_client: String
     nom: String
     description: String
     dateDebut:  String
@@ -234,12 +241,12 @@ type Projets {
     dateAjout: Datetime
     statut: String
     createur: Utilisateurs
+    client: Clients
     autres: String
     taches: [Taches!]!
     devis: [Devis!]!
     factures: [Factures!]!
     assignations: [Assignations!]!
-    
 }
 
 type ProjetsList {
@@ -257,12 +264,14 @@ type Taches {
     id_tache: Int
     id_projet: Int
     nom: String
+    nom_projet: String
     description: String
     dateDebut: String
     dateEcheance: String
     priorite: String
     statut: String
     autres: String 
+    projet: Projets
 }
 
 type TachesList {
@@ -299,8 +308,9 @@ type AssignationList {
 type Devis {
     id_devis: Int
     id_projet: Int
+    nom_projet: String
     projet: Projets
-    montantTotal: Float
+    montantTotal: Int
     statut: String
     elementsDevis: [ElementDevis]
     factures: [Factures]
@@ -315,7 +325,7 @@ type ElementDevis {
     id_elementDevis: Int
     devis: Devis
     description: String
-    prixUnitaire: Float
+    prixUnitaire: Int
     quantite: Int
 }
 
@@ -329,7 +339,7 @@ type Factures {
     projet: Projets
     devis: Devis
     dateCreation: String
-    montantTotal: Float
+    montantTotal: Int
     statut: String
     autres: String
     paiements: [Paiements]  
@@ -343,7 +353,7 @@ type FacturesList {
 type Paiements {
     id_paiement: Int
     facture: Factures
-    montant: Float
+    montant: Int
     datePaiement: String
     autres: String 
 }

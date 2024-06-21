@@ -15,25 +15,20 @@ async function deleteProjet(parent, args) {
     if (!projet) {
       throw new GraphQLError("Projet non trouvé");
     }
-    
     await prisma.taches.deleteMany({
-        where: { id_tache: id_projet },
+      where: { id_projet: id_projet },
     });
-
     await prisma.devis.deleteMany({
-        where: { id_devis: id_projet },
+      where: { id_projet: id_projet },
     });
-
     await prisma.factures.deleteMany({
-        where: { id_facture: id_projet },
+      where: { id_projet: id_projet },
     });
-
     await prisma.assignations.deleteMany({
-        where: { id_assignation: id_projet },
+      where: { id_projet: id_projet },
     });
-
     await prisma.projets.deleteMany({
-        where: { id_projet },
+      where: { id_projet },
     });
 
     return true;

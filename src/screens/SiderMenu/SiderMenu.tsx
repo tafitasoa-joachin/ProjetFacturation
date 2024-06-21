@@ -40,7 +40,7 @@ const SiderMenu = () => {
   });
 
   return (
-    <div>
+    <div style={{ paddingTop: 20, background: "lightBlue"}}>
       <Avatar
         style={{
           backgroundColor: "#87d068",
@@ -52,9 +52,9 @@ const SiderMenu = () => {
       <Title level={4} style={{ textAlign: "center", color: COLOR.color }}>
        { data?.utilisateurOne?.nom}
       </Title>
-      <Divider style={{ margin: 0, backgroundColor: gray }} />
+      <Divider  />
       <Menu
-        style={{backgroundColor: BACKGROUND_VIEW.backgroundColor, color: COLOR.color}}
+        style={{backgroundColor: "lightblue", color: COLOR.color}}
         onClick={(item) => {
           navigate(item.key);
         }}
@@ -87,7 +87,7 @@ const SiderMenu = () => {
           {
             key: "/Facture",
             icon: <RiBillFill />,
-            label: "Facture",
+            label: "Factures",
           },
           {
             key: "/Paiements",

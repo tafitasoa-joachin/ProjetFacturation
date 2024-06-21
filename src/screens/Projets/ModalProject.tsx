@@ -50,7 +50,7 @@ const ModalProject = ({
         );
     }, [clientData, search]);
 
-    const handleChangeLangue = (value: string) => {
+    const handleChangeIdClient = (value: string) => {
         setIdClient(value);
     };
 
@@ -76,7 +76,7 @@ const ModalProject = ({
                 defaultValue={''}
                 value={id_client}
                 style={{ marginRight: 16}}
-                onChange={handleChangeLangue}
+                onChange={handleChangeIdClient}
             >
                 {filterItems.map((item: any, index: any) => {
                     return(

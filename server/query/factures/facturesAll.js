@@ -10,11 +10,25 @@ const facturesAll = async (parent,args) => {
         const totalPages = Math.ceil(count / pageSize);
         const skip = page * pageSize;
 
-        const facturesAll =  await prisma.factures.findMany({
+        // const facturesAll =  await prisma.factures.findMany({
+        //     skip: skip,
+        //     take: pageSize,
+        //     include: { paiements: true }
+        // })
+        const facturesAll = await prisma.factures.findMany({
             skip: skip,
             take: pageSize,
-            include: { paiements: true }
-        })
+            include: {
+              projet: {
+                include: {
+                  createur: true,
+                  client: true,
+                },
+              },
+              devis: true,
+              paiements: true,
+            },
+        });
 
         return {
             facturesAll, 

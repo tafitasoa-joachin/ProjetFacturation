@@ -10,10 +10,18 @@ const tachesAll = async (parent,args) => {
     const totalPages = Math.ceil(count / pageSize);
     const skip = page * pageSize;
 
-    const tachesAll =  await prisma.taches.findMany({
+    const tachesAll = await prisma.taches.findMany({
       skip: skip,
       take: pageSize,
-    })
+      include: {
+        projet: {
+          include: {
+            createur: true,
+            client: true,
+          },
+        },
+      },
+  });
 
     // console.log(tachesAll);
 

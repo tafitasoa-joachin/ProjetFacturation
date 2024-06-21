@@ -9,7 +9,7 @@ const updateTache = async (parent, args, context) => {
   try {
     const {
       id_tache,
-      id_projet, nom, description, dateDebut, dateEcheance, priorite, statut, autres
+      id_projet, nom, description, dateDebut, dateEcheance, priorite, statut, autres, nom_projet
     } = args;
 
     // Vérifier si l'utilisateur est authentifié
@@ -19,7 +19,7 @@ const updateTache = async (parent, args, context) => {
     // }
 
     let dataToUpdate = {
-        id_projet, nom, description, dateDebut, dateEcheance, priorite, statut, autres
+        id_projet, nom, description, dateDebut, dateEcheance, priorite, statut, autres, nom_projet
     };
 
     let updateTache;

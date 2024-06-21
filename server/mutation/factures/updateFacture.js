@@ -13,10 +13,10 @@ const updateFacture = async (parent, args, context) => {
     } = args;
 
     // Vérifier si l'utilisateur est authentifié
-    const utilisateurId = await autorisation(context.token);
-    if (utilisateurId === 0) {
-      return new GraphQLError(constantes.CONNECTION_REFUSE);
-    }
+    // const utilisateurId = await autorisation(context.token);
+    // if (utilisateurId === 0) {
+    //   return new GraphQLError(constantes.CONNECTION_REFUSE);
+    // }
 
     let dataToUpdate = {
         id_projet, id_devis, dateCreation, montantTotal, statut, autres

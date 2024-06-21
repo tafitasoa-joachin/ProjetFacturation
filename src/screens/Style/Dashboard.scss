@@ -1,13 +1,28 @@
 .container {
   height: 100vh;
   width: 100vw;
+  display: flex;
+  flex-direction: column;
 }
 
 .Header {
   width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 20px;
+  border-bottom: 6px solid rgba(0, 0, 0, 0.15);
+}
+
+.layout {
+  height: 100vh; // S'assure que le layout prend toute la hauteur de la fenêtre
 }
 
 .content {
-  padding: 24px;
-  overflow: auto;
+  overflow-y: auto; // Permet le défilement vertical du contenu
+  padding: 24px; // Ajoute du padding au contenu
+  height: calc(100vh - 64px - 70px); // Hauteur du contenu: total - hauteur du header - hauteur du footer
+  background: inherit; // Pour hériter du background défini dans les props de Content
 }
+

@@ -50,7 +50,6 @@ const App = () => {
   )
 }
 
-
 export default () => (
     <ApolloProvider client={client}>
       <App />

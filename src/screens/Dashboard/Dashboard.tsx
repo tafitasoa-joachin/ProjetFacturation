@@ -1,15 +1,18 @@
 import React, { useContext, useState } from "react";
-import { Breadcrumb, Card, Divider, Space, Typography, DatePicker } from "antd";
-import { FaMoneyCheckAlt, FaUsers } from "react-icons/fa";
+import { Breadcrumb, Card, Divider, Space, Typography, DatePicker, Statistic, Table } from "antd";
+import { Fa500Px, FaMoneyCheckAlt, FaUserLock, FaUsers } from "react-icons/fa";
 import ChartBar from "../ChartBar/ChartBar";
 import dayjs from "dayjs";
 import { useQuery, gql } from "@apollo/client";
 import { GET_CLIENTS_AND_PROJECTS_COUNT } from "../../gql/dashboard";
 import { AppContext } from "../../components/Context";
 import { useColor } from "../../components/color";
+import { DollarCircleOutlined, ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 
 
 const Dashboard: React.FC = () => {
+  const { t } = useTranslation();
   const { isDark } = useContext(AppContext);
   const [selectedYear, setSelectedYear] = useState<number>(dayjs().year()); // Utilisation de dayjs().year() pour obtenir l'année actuelle
 
@@ -31,40 +34,29 @@ const Dashboard: React.FC = () => {
   const COLOR = isDark ? useColor.COLOR_WHITE : useColor.COLOR_DARK;
 
   return (
-    <>
-      <Breadcrumb>
-        <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
-      </Breadcrumb>
-
+    <div>
+      <Typography.Title level={4}>{t("tb")}</Typography.Title>
       <Space direction="horizontal" style={{ gap: "60px", marginTop: "20px" }}>
         <Card style={{ borderLeft: "3px solid green", backgroundColor: BACKGROUND_FB.backgroundColor }}>
           <Space direction="horizontal">
-            <FaMoneyCheckAlt />
-            <small style={{ color: COLOR.color}}>Total budget</small>
+            <DollarCircleOutlined style={{ color: COLOR.color, backgroundColor: "green", borderRadius: 20, fontSize: 20, padding: 10}}/>
+            <Statistic title="Total budget" value={"200"}/>
           </Space>
-          <Typography.Title style={{ color: COLOR.color}}>$4567600</Typography.Title>
         </Card>
         <Card style={{ borderLeft: "3px solid blue", backgroundColor: BACKGROUND_FB.backgroundColor }}>
           <Space direction="horizontal">
-            <FaUsers />
-            <small style={{ color: COLOR.color}}>Client</small>
+            <UserOutlined style={{ color: COLOR.color, backgroundColor: "blue", borderRadius: 20, fontSize: 20, padding: 10}}/>
+            <Statistic title="Clients" value={`${clientCount}`}/>
           </Space>
-          <Typography.Title style={{ color: COLOR.color}}>{clientCount}</Typography.Title>
-        </Card>
-        <Card style={{ borderLeft: "3px solid red", backgroundColor: BACKGROUND_FB.backgroundColor }}>
-          <Space direction="horizontal">
-            <small style={{ color: COLOR.color}}>Stock</small>
-          </Space>
-          <Typography.Title style={{ color: COLOR.color}}>$4567600</Typography.Title>
         </Card>
         <Card style={{ borderLeft: "3px solid yellow", backgroundColor: BACKGROUND_FB.backgroundColor }}>
           <Space direction="horizontal">
-            <small style={{ color: COLOR.color}}>Projets</small>
+            <ShoppingCartOutlined style={{ color: COLOR.color, backgroundColor: "yellow", borderRadius: 20, fontSize: 20, padding: 10}}/>
+            <Statistic title="Projets" value={`${projectCount}`}/>
           </Space>
-          <Typography.Title style={{ color: COLOR.color}}>{projectCount}</Typography.Title>
         </Card>
       </Space>
-      <Divider />
+      <Divider/>
       <DatePicker
         picker="year"
         defaultValue={dayjs(selectedYear.toString())} // Convertir selectedYear en string
@@ -72,7 +64,7 @@ const Dashboard: React.FC = () => {
         style={{ marginBottom: '20px' }}
       />
       <ChartBar year={selectedYear} />
-    </>
+    </div>
   );
 };
 

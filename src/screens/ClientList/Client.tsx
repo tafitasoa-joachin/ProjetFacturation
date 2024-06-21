@@ -1,16 +1,13 @@
 import React, { useMemo, useState, useEffect, useContext } from "react";
 import { EditOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Card, Input, Modal, Table } from "antd";
+import { Breadcrumb, Button, Card, Input, Modal, Pagination, Table } from "antd";
 import { MdDeleteOutline } from "react-icons/md";
 import { GoDiffAdded } from "react-icons/go";
 import ModalForm from "./ModalForm";
 import { useMutation, useQuery } from "@apollo/client";
 import { ADD_CLIENT, DELETE_CLIENT, GET_CLIENTS, UPDATE_CLIENT } from "../../gql/client";
 import { AppContext } from "../../components/Context";
-import { isDisabled } from "@testing-library/user-event/dist/utils";
 import { useColor } from "../../components/color";
-import { isDate } from "moment";
-import { color } from "html2canvas/dist/types/css/types/color";
 
 interface ClientData {
   id_client: number; 
@@ -32,14 +29,15 @@ const Client: React.FC = () => {
   const [ adresse, setAdresse ] = useState<string>(""); 
   const [ email, setEmail ] = useState<string>(""); 
   const [ phone, setPhone ] = useState<string>(""); 
-  const [ autres, setAutres ] = useState<string>(""); 
+  const [ autres, setAutres ] = useState<string>("");
+  const [ currentPage, setCurrentPage ] = useState<number>(1);
 
   const { loading, error, refetch , data: clientData } = useQuery(
     GET_CLIENTS,
     {
       variables: {
-        page: 0,
-        pageSize: 6
+        page: currentPage - 1,
+        pageSize: 5
       }
     }
   ); 
@@ -187,6 +185,7 @@ const Client: React.FC = () => {
   }
 
   const handleEditing = async() => {
+    console.log(editingClient?.id_client);
     if (!editingClient) return;
     try {
       await updateClient({
@@ -206,6 +205,11 @@ const Client: React.FC = () => {
     } catch (error) {
       console.error("Error editing client:", error);
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    refetch();
   };
 
   const BACKGROUND = isDark ? useColor.BGCOLOR_DARK_FB : useColor.BGCOLOR_WHITE;
@@ -233,7 +237,6 @@ const Client: React.FC = () => {
           rowKey={(item) => item.id_client}
           style={{ marginTop: "20px", background: BACKGROUND.backgroundColor }}
         />
-
         <GoDiffAdded
           onClick={creatNewClient}
           style={{ width: 25, height: 25, margin: "10px" }}

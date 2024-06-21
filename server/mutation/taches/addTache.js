@@ -8,22 +8,13 @@ const addTache = async (parent, args, context) => {
     const { 
       id_projet,
       nom,
+      nom_projet,
       description,
       dateDebut,
       dateEcheance,
       priorite,
       statut,
     } = args;
-
-    console.log(
-      id_projet,
-      nom,
-      description,
-      dateDebut,
-      dateEcheance,
-      priorite,
-      statut,
-    );
 
     const nouvelTache = await prisma.taches.create({
       data: {
@@ -33,6 +24,7 @@ const addTache = async (parent, args, context) => {
         dateDebut: dateDebut ? dateDebut : "",
         dateEcheance: dateEcheance ? dateEcheance : "",
         priorite: priorite ? priorite : "1",
+        nom_projet: nom_projet,
         statut: statut ? statut : "En cours",
       },
     });

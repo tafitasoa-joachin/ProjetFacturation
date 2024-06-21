@@ -52,7 +52,7 @@ const Login = () => {
       <div className="form-container">
         <div className="form-left">
           <div style={{ width: '300px', margin: '0 auto', paddingTop: '50px' }}>
-            <h2>{t('hello_friend')}</h2>
+            <h2>{t('Authentification')}</h2>
             <Form
               name="login_form"
               initialValues={{ remember: true }}
@@ -77,7 +77,7 @@ const Login = () => {
                 <Input
                   prefix={<LockOutlined />}
                   type={passwordVisible ? "text" : "password"}
-                  placeholder="Password"
+                  placeholder="Mots de passe"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   suffix={passwordVisible ? 
@@ -88,24 +88,24 @@ const Login = () => {
               </Form.Item>
               <Form.Item>
                 <Link style={{ float: 'left' }} to="/signup">
-                  {t('signup')}
+                  {t("S'inscrire")}
                 </Link>
                 <Link style={{ float: 'right' }} to="/forgotpassword">
-                  {t('forgot_password')}
+                  {t('Mots de passe oublié')}
                 </Link>
               </Form.Item>
               {error && <p style={{ color: 'red' }}>{error?.message}</p>}
               <Form.Item>
                 <Button type="primary" htmlType="submit" style={{ width: '100%' }} loading={loading}>
-                  {t('login')}
+                  {t('Se connecter')}
                 </Button>
               </Form.Item>
             </Form>
           </div>
         </div>
         <div className="form-right">
-          <h2>{t('glad_to_see_you')}</h2>
-          <p>{t('welcome_message')}</p>
+          <h2>{t('MCA-FACTURE')}</h2>
+          <p>{t('Bienvenus')}</p>
         </div>
       </div>
     </div>

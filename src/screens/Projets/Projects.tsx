@@ -13,6 +13,7 @@ import {
   Space,
   Tabs,
   Typography,
+  Pagination,
 } from "antd";
 import { DeleteOutlined, DownOutlined, EditOutlined } from "@ant-design/icons";
 import { useContext, useEffect, useMemo, useState } from "react";
@@ -23,6 +24,8 @@ import { useMutation, useQuery } from "@apollo/client";
 import { jwtDecode } from "jwt-decode";
 import { AppContext } from "../../components/Context";
 import { useColor } from "../../components/color";
+import ProjetDetailModal from "./ModalDetailProject";
+import { AiOutlineArrowRight } from "react-icons/ai";
 
 interface ProjectData {
   id_projet: number; 
@@ -48,6 +51,10 @@ const Projects = () => {
   const [ searchText, setSearchText ] = useState('');
   const [ isEditing, setIsEditing ] = useState<boolean>(false);
   const [ editingProject, setEditingProject ] = useState<ProjectData | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [ visible, setVisible ] = useState(false);
+  const [ item, setItem ] = useState(null)
 
   useEffect(() => {
     const getTokenAndDecode = () => {
@@ -65,15 +72,21 @@ const Projects = () => {
   }, []);
   
   const [ addProjet, { loading: loadingProject, error: errorAdd }] = useMutation(ADD_PROJECT);
-  const {  data: projectData, refetch, loading: loadingQuery, error } = useQuery(GETALL_PROJECT, {
+  const { data: projectData, refetch, loading: loadingQuery, error } = useQuery(GETALL_PROJECT, {
     variables: {
-      page: 0,
-      pageSize: 6
-    }
+      page: currentPage - 1,
+      pageSize: 6,
+    },
   });
 
+  useEffect(() => {
+    if (projectData) {
+      setTotalPages(projectData.projetAll.pageInfos.totalPages);
+    }
+  }, [projectData]);
+
   const [ deleteProjet , { loading: loadingDeleteProjet, error: errorDeleteProject }] = useMutation(DELETE_PROJET);
-  const [ updateProjet, { loading: loadingUpdateProjet, error: errorUpdate }] = useMutation(UPDATE_PROJET)
+  const [ updateProjet, { loading: loadingUpdateProjet, error: errorUpdate }] = useMutation(UPDATE_PROJET);
 
   const filterItems = useMemo(() => {
     if (!projectData) {
@@ -98,7 +111,7 @@ const Projects = () => {
   ];
 
   const handleSubmit = async() => {
-    if(nom == "" || id_createur== "") return;
+    if(nom === "" || id_createur === "") return;
     try {
       await addProjet({
         variables: {
@@ -110,9 +123,8 @@ const Projects = () => {
           id_createur: id_createur,
           id_client: id_client
         },
-        // refetchQueries: [{ query: GETALL_PROJECT }],
       });
-      refetch()
+      refetch();
       setModal2Open(false);
     } catch (error) {
       console.error("Error add project:", error); 
@@ -149,7 +161,7 @@ const Projects = () => {
           id_client: id_client
         },
       });
-      refetch()
+      refetch();
       setIsEditing(false);
       setEditingProject(null); 
     } catch (error) {
@@ -175,7 +187,7 @@ const Projects = () => {
               id_projet: id_projet, 
             },
           }); 
-          refetch()
+          refetch();
         } catch (error) { 
           console.error("Error deleting project:", error); 
         } 
@@ -188,7 +200,6 @@ const Projects = () => {
     setModal2Open(true);
   }
 
-  
   const resetFormFields = () => {
     setNom("");
     setDescription("");
@@ -204,6 +215,16 @@ const Projects = () => {
 
   const BACKGROUND = isDark ? useColor.BGCOLOR_DARK_FB : useColor.BGCOLOR_WHITE;
   const COLOR = isDark ? useColor.COLOR_WHITE : useColor.COLOR_DARK;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    refetch();
+  };
+
+  const viewDetail = (item: any) => {
+    setItem(item);
+    setVisible(!visible)
+  }
 
   return (
     <Card
@@ -230,15 +251,24 @@ const Projects = () => {
                   bordered={false}
                   style={{ 
                     display: 'flex', 
-                    width: 310, 
+                    width: 290, 
                     border: "0.5px solid #cccccc", 
                     flexDirection: 'column', 
                     backgroundColor: BACKGROUND.backgroundColor,
                   }}
                 >
-                  <small style={{ color: COLOR.color}}>
-                    {truncateDescription(item?.description, 35)}
-                  </small>
+                  <Space direction="horizontal" style={{ alignItems: 'center',  justifyContent: 'space-between'}}>
+                    <small style={{ color: COLOR.color}}>
+                      {truncateDescription(item?.description, 35)}
+                    </small>
+                    <small
+                      onClick={()=> viewDetail(item)}
+                      style={{ color: "#FF164D", fontSize: 14, alignSelf: 'flex-end' }}
+                    >
+                      En savoir plus
+                      <AiOutlineArrowRight style={{ position: "absolute", marginTop: 6 }} />
+                    </small>
+                  </Space>
                   <Progress
                     percent={item.statut}
                     size="default"
@@ -252,7 +282,7 @@ const Projects = () => {
                       style={{ backgroundColor: 'green' }}
                       onClick={() =>  {editProjet(item);}}
                     >
-                      Modification
+                      Modifier
                     </Button>
                     <Button
                       type="primary"
@@ -260,7 +290,7 @@ const Projects = () => {
                       style={{ backgroundColor: 'red'}}
                       onClick={() => deleteProject(item.id_projet)}
                     >
-                      Suppression
+                      Supprimer
                     </Button>
                   </div>
                 </Card>
@@ -268,8 +298,15 @@ const Projects = () => {
             })
           }
         </div>
+        <Pagination
+          current={currentPage}
+          total={totalPages * 6}
+          pageSize={6}
+          onChange={handlePageChange}
+          style={{ marginTop: 20, textAlign: "right" }}
+        />
       </Skeleton>
-
+      <ProjetDetailModal visible={visible} setVisible={setVisible} item={item}/>
       <GoDiffAdded
         onClick={()=> creatNewProject()}
         style={{ width: 25, height: 25, margin: "10px" }} 
@@ -321,5 +358,5 @@ const Projects = () => {
     </Card>
   );
 };
-export default Projects;
 
+export default Projects;

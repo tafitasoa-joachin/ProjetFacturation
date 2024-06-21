@@ -25,7 +25,7 @@ const FooterBar = () => {
     <div style={{ textAlign: "center", backgroundColor: BACKGROUND.backgroundColor }}>
       <MdOutlineKeyboardArrowUp
         onClick={showDrawer}
-        style={{ width: "25px", height: "25px", color: COLOR.color }}
+        style={{ width: "25px", height: "20px", color: COLOR.color }}
       />
       <Drawer
         placement="bottom"

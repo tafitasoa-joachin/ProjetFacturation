@@ -13,6 +13,17 @@ tachesAll($page: Int!, $pageSize: Int!) {
             priorite
             statut
             id_projet
+            nom_projet
+            projet {
+                id_projet
+                nom_client
+                nom
+                description
+                dateDebut
+                dateEcheance
+                dateAjout
+                statut
+            }
         }
         pageInfos {
             pageActuelle

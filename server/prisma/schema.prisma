@@ -30,6 +30,7 @@ model Clients {
 model Projets {
   id_projet     Int        @id @default(autoincrement())
   nom           String?
+  nom_client    String?
   description   String?
   dateDebut     String?
   dateEcheance  String?
@@ -51,6 +52,7 @@ model Taches {
   projet        Projets     @relation(fields: [id_projet], references: [id_projet])
   id_projet     Int
   nom           String?
+  nom_projet    String?
   description   String?
   dateDebut     String?
   dateEcheance  String?
@@ -81,7 +83,8 @@ model Devis {
   id_devis       Int      @id  @default(autoincrement())
   projet         Projets  @relation(fields: [id_projet], references: [id_projet])
   id_projet      Int
-  montantTotal   Float?
+  nom_projet     String?
+  montantTotal   Int?
   statut         String?
   elementsDevis  ElementDevis[]
   factures       Factures[]

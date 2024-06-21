@@ -1,5 +1,5 @@
-import { Layout, Select, Button, Modal } from "antd";
-import { LogoutOutlined, BulbOutlined, BulbFilled } from "@ant-design/icons";
+import { Layout, Select, Button, Modal, Image, Space, Badge } from "antd";
+import { LogoutOutlined, BulbOutlined, BulbFilled, MailOutlined, BellFilled, BellOutlined } from "@ant-design/icons";
 import React, { useContext } from "react";
 import { Typography } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ import { useColor } from "../../components/color";
 const { Header } = Layout;
 const { Option } = Select;
 
-const NavBar = () => {
+const HeaderApp = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { isDark, isTranslated, setIsDark, valueLang, setIsTranslated, setValue } = useContext(AppContext);
@@ -40,48 +40,54 @@ const NavBar = () => {
 
   const BACKGROUND_VIEW = isDark ? useColor.BGCOLOR_DARK : useColor.BGCOLOR_WHITE;
 
-  const headerStyle = {
+  const HeaderAppStyle = {
     backgroundColor: BACKGROUND_VIEW.backgroundColor,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "0 16px",
+    padding: "4x px 4px 12px",
+    borderBottom: "1px solid lightGray",
   };
 
   const textStyle: React.CSSProperties = {
     color: isDark ? "white" : "black",
+    fontSize: 20
   };
 
   return (
     <div>
-      <Header className="header" style={headerStyle}>
-        <Typography>
-          <Typography.Title level={3} style={textStyle}>MCA-FACT</Typography.Title>
-        </Typography>
-        <div>
+      <Header className="HeaderApp" style={HeaderAppStyle}>
+        <Typography.Title level={3} style={{ color: "blue", marginLeft: 200}}>MCA-FACT</Typography.Title>
+        <Space style={{ gap: 23}}>
           <Select
             defaultValue={valueLang}
-            style={{ marginRight: 16}}
             onChange={handleChangeLangue}
           >
             <Option value="fr">Français</Option>
             <Option value="en">Anglais</Option>
           </Select>
+          <Badge count={20}>
+            <BellOutlined 
+              onClick={() => {}}
+              style={textStyle}
+            />
+          </Badge>
           <Button
             type="text"
             icon={isDark ? <BulbFilled style={textStyle} /> : <BulbOutlined style={textStyle} />}
-            style={{ marginRight: 16 }}
             onClick={toggleSwitch}
+            style={{ marginLeft: 10}}
           />
           <Button
             type="text"
             icon={<LogoutOutlined style={textStyle} />}
             onClick={signout}
+            style={{ fontSize: 16}}
           />
-        </div>
+        </Space>
       </Header>
     </div>
   );
 };
 
-export default NavBar;
+export default HeaderApp;

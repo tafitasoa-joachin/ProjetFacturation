@@ -8,6 +8,7 @@ import {
   Input,
   MenuProps,
   Modal,
+  Pagination,
   Progress,
   Rate,
   Skeleton,
@@ -39,29 +40,37 @@ interface TaskData {
 
 const TaskScreen = () => {
   const { isDark } = useContext(AppContext);
-  const [ modal2Open, setModal2Open ] = useState<boolean>(false);
+  const [modal2Open, setModal2Open] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [ id_projet, setIdProjet ] = useState('');
-  const [ nom, setNom ] = useState('');
-  const [ description, setDescription ] = useState('');
-  const [ dateDebut, setDateDebut ] = useState('');
-  const [ dateEcheance, setDateEcheance ] = useState('');
-  const [ priorite, setPriorite ] = useState('');
-  const [ statut, setStatut ] = useState('');
-  const [ searchText, setSearchText ] = useState('');
-  const [ isEditing, setIsEditing ] = useState<boolean>(false);
-  const [ editingTask, setEditingTask ] = useState<TaskData | null>(null);
+  const [id_projet, setIdProjet] = useState('');
+  const [nom, setNom] = useState('');
+  const [description, setDescription] = useState('');
+  const [dateDebut, setDateDebut] = useState('');
+  const [dateEcheance, setDateEcheance] = useState('');
+  const [priorite, setPriorite] = useState('');
+  const [statut, setStatut] = useState('');
+  const [searchText, setSearchText] = useState('');
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editingTask, setEditingTask] = useState<TaskData | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
-  const [ addTache, { loading: loadingAddTask, error: errorAdd }] = useMutation(ADD_TASK);
-  const {  data: taskData, refetch, loading: loadingQuery, error } = useQuery(GETTASK_ALL, {
+  const [addTache, { loading: loadingAddTask, error: errorAdd }] = useMutation(ADD_TASK);
+  const { data: taskData, refetch, loading: loadingQuery, error } = useQuery(GETTASK_ALL, {
     variables: {
-      page: 0,
-      pageSize: 12
-    }
+      page: currentPage - 1,
+      pageSize: 12,
+    },
   });
 
-  const [ deleteTache , { loading: loadingDeleteTask, error: errorDeleteTask }] = useMutation(DELETE_TASK);
-  const [ updateTache, { loading: loadingUpdateTask, error: errorUpdate }] = useMutation(UPDATE_TASK);
+  useEffect(() => {
+    if (taskData) {
+      setTotalPages(taskData.tachesAll.pageInfos.totalPages);
+    }
+  }, [taskData]);
+
+  const [deleteTache, { loading: loadingDeleteTask, error: errorDeleteTask }] = useMutation(DELETE_TASK);
+  const [updateTache, { loading: loadingUpdateTask, error: errorUpdate }] = useMutation(UPDATE_TASK);
 
   const filterItems = useMemo(() => {
     if (!taskData) {
@@ -70,8 +79,8 @@ const TaskScreen = () => {
     return taskData?.tachesAll?.tachesAll.filter(
       (item: { nom: string; description: string; id_projet: number }) =>
         item.nom.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchText.toLowerCase()) || 
-        item.id_projet.toString().includes(searchText.toLowerCase()) 
+        item.description.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.id_projet.toString().includes(searchText.toLowerCase())
     );
   }, [taskData, searchText]);
 
@@ -93,64 +102,64 @@ const TaskScreen = () => {
     },
   ];
 
-  const handleSubmit = async() => {
-    if(nom == "" || id_projet == undefined  ) return;
+  const handleSubmit = async () => {
+    if (nom === "" || id_projet === undefined) return;
     try {
       const task = await addTache({
         variables: {
-          nom: nom, 
-          description: description, 
-          dateDebut: dateDebut, 
-          dateEcheance: dateEcheance, 
-          priorite: priorite, 
-          statut: statut ? statut : "En attente", 
+          nom: nom,
+          description: description,
+          dateDebut: dateDebut,
+          dateEcheance: dateEcheance,
+          priorite: priorite,
+          statut: statut ? statut : "En attente",
           id_projet: id_projet
         },
       });
       console.log(task);
-      refetch()
+      refetch();
       setModal2Open(false);
     } catch (error) {
-      console.log("Error add task:", error); 
-    } 
+      console.log("Error add task:", error);
+    }
   }
- 
+
   const editTask = (item: any) => {
-    setIsEditing(!isEditing); 
-    setEditingTask({ ...item }); 
+    setIsEditing(!isEditing);
+    setEditingTask({ ...item });
   }
-  
+
   useEffect(() => {
-    if(editingTask){
+    if (editingTask) {
       setIdProjet(editingTask.id_projet);
       setNom(editingTask.nom);
       setDescription(editingTask.description);
       setDateDebut(editingTask.dateDebut);
-      setDateEcheance(editingTask.dateEcheance); 
+      setDateEcheance(editingTask.dateEcheance);
       setPriorite(editingTask.priorite);
       setStatut(editingTask.statut);
     }
   }, [editingTask]);
 
-  const handleEditing = async() => {
+  const handleEditing = async () => {
     if (!isEditing) return;
     try {
-     
+
       await updateTache({
         variables: {
           id_tache: editingTask?.id_tache,
-          id_projet: id_projet, 
-          nom: nom || "", 
-          description: description ||"", 
-          dateDebut: dateDebut ||"", 
-          dateEcheance: dateEcheance || "", 
-          priorite: priorite || "", 
-          statut: statut || "", 
-          autres: "" 
+          id_projet: id_projet,
+          nom: nom || "",
+          description: description || "",
+          dateDebut: dateDebut || "",
+          dateEcheance: dateEcheance || "",
+          priorite: priorite || "",
+          statut: statut || "",
+          autres: ""
         },
       });
       console.log(errorAdd);
-      refetch()
+      refetch();
       setIsEditing(false);
       setEditingTask(null);
     } catch (error) {
@@ -173,15 +182,15 @@ const TaskScreen = () => {
         try {
           await deleteTache({
             variables: {
-              id_tache: id_tache, 
+              id_tache: id_tache,
             },
-          }); 
-          refetch()
-        } catch (error) { 
-          console.error("Error deleting task:", error); 
-        } 
-      }, 
-    }); 
+          });
+          refetch();
+        } catch (error) {
+          console.error("Error deleting task:", error);
+        }
+      },
+    });
   }
 
   const creatNewTask = () => {
@@ -194,7 +203,7 @@ const TaskScreen = () => {
     setNom("");
     setDescription("");
     setDateDebut("");
-    setDateEcheance(""); 
+    setDateEcheance("");
     setPriorite("");
     setStatut("");
   };
@@ -206,6 +215,11 @@ const TaskScreen = () => {
 
   const BACKGROUND = isDark ? useColor.BGCOLOR_DARK_FB : useColor.BGCOLOR_WHITE;
   const COLOR = isDark ? useColor.COLOR_WHITE : useColor.COLOR_DARK;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    refetch();
+  };
 
   return (
     <div>
@@ -223,52 +237,59 @@ const TaskScreen = () => {
             />
             <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
               {
-                filterItems.map((item: any, index: any)=> {
-                  return(
-                  <Badge.Ribbon text="Autop" key={index}>
-                    <Card 
-                      title={item.nom} 
-                      size="small" 
-                      style={{ width: 200}}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15, alignItems: "center"}}>
-                        <small style={{ color: COLOR.color}}>
-                          {truncateDescription(item?.description, 12)} 
-                        </small>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: "center", gap: 8}}>
-                          <Button
-                            type="primary"
-                            icon={<EditOutlined />}
-                            style={{ backgroundColor: 'green'}}
-                            onClick={() => {editTask(item)}}
-                          />
-                          <Button
-                            type="primary"
-                            icon={<DeleteOutlined />}
-                            style={{ backgroundColor: 'red'}}
-                            onClick={() => handledeleteProject(item.id_tache)}
-                          />
-                        </div>  
-                      </div>
-                    </Card>
-                  </Badge.Ribbon>);
+                filterItems.map((item: any, index: any) => {
+                  return (
+                    <Badge.Ribbon text={`${item?.projet?.nom}`} key={index}>
+                      <Card
+                        title={item.nom}
+                        size="small"
+                        style={{ width: 200 }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15, alignItems: "center" }}>
+                          <small style={{ color: COLOR.color }}>
+                            {truncateDescription(item?.description, 12)}
+                          </small>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: "center", gap: 8 }}>
+                            <Button
+                              type="primary"
+                              icon={<EditOutlined />}
+                              style={{ backgroundColor: 'green' }}
+                              onClick={() => { editTask(item) }}
+                            />
+                            <Button
+                              type="primary"
+                              icon={<DeleteOutlined />}
+                              style={{ backgroundColor: 'red' }}
+                              onClick={() => handledeleteProject(item.id_tache)}
+                            />
+                          </div>
+                        </div>
+                      </Card>
+                    </Badge.Ribbon>);
                 })
               }
             </div>
+            <Pagination
+              current={currentPage}
+              total={totalPages * 12}
+              pageSize={12}
+              onChange={handlePageChange}
+              style={{ marginTop: 20, textAlign: 'right' }}
+            />
           </Skeleton>
         </Tabs.TabPane>
 
         <Tabs.TabPane tab="En Cours" disabled={loading} key="tab2">
           <Skeleton loading={loading}>
             <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-    
+
             </div>
           </Skeleton>
         </Tabs.TabPane>
 
         <Tabs.TabPane tab="En attente" disabled={loading} key="tab3">
           <Skeleton loading={loading}>
-            
+
           </Skeleton>
         </Tabs.TabPane>
 
@@ -286,14 +307,14 @@ const TaskScreen = () => {
       </Tabs>
 
       <GoDiffAdded
-        onClick={()=> creatNewTask()}
-        style={{ width: 25, height: 25, margin: "10px" }} 
-      /> 
-      <Modal 
-        title="Ajouter un nouveau tâche" 
-        visible={modal2Open} 
-        onOk={() => handleSubmit()} 
-        onCancel={() => setModal2Open(false)} 
+        onClick={() => creatNewTask()}
+        style={{ width: 25, height: 25, margin: "10px" }}
+      />
+      <Modal
+        title="Ajouter un nouveau tâche"
+        visible={modal2Open}
+        onOk={() => handleSubmit()}
+        onCancel={() => setModal2Open(false)}
       >
         <TaskModal
           id_projet={id_projet}
@@ -312,11 +333,11 @@ const TaskScreen = () => {
           setStatut={setStatut}
         />
       </Modal>
-      <Modal 
+      <Modal
         title="Modification d'un tâche "
-        visible={isEditing}  
-        onOk={() => handleEditing()} 
-        onCancel={() => setIsEditing(false)} 
+        visible={isEditing}
+        onOk={() => handleEditing()}
+        onCancel={() => setIsEditing(false)}
       >
         <TaskModal
           id_projet={id_projet}
@@ -339,4 +360,3 @@ const TaskScreen = () => {
   );
 };
 export default TaskScreen;
-

@@ -29,6 +29,7 @@ CREATE TABLE "Projets" (
     "description" TEXT,
     "dateDebut" TEXT,
     "dateEcheance" TEXT,
+    "dateAjout" TIMESTAMP(3),
     "statut" TEXT,
     "id_createur" TEXT NOT NULL,
     "id_client" INTEGER NOT NULL,
@@ -77,7 +78,7 @@ CREATE TABLE "Assignations" (
 CREATE TABLE "Devis" (
     "id_devis" SERIAL NOT NULL,
     "id_projet" INTEGER NOT NULL,
-    "montantTotal" DOUBLE PRECISION,
+    "montantTotal" INTEGER,
     "statut" TEXT,
 
     CONSTRAINT "Devis_pkey" PRIMARY KEY ("id_devis")
