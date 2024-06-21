@@ -3,7 +3,7 @@ import '../src/components/locales/i18n'
 import { ConfigProvider } from "antd";
 import { BrowserRouter } from "react-router-dom";
 import { ApolloClient, InMemoryCache, createHttpLink, ApolloProvider } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context'
+import { setContext } from '@apollo/client/link/context';
 import Navigation from './navigations/Navigation';
 import { AppContext } from './components/Context';
 
